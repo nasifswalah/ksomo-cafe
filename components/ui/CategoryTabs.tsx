@@ -1,10 +1,11 @@
 import Colors from "@/constants/colors";
 import React from "react";
-import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 interface Category {
   id: string;
   name: string;
+  image: string;
 }
 
 interface CategoryTabsProps {
@@ -35,6 +36,7 @@ const CategoryTabs: React.FC<CategoryTabsProps> = ({
             onPress={() => onSelectCategory(category.id)}
             testID={`category-tab-${category.id}`}
           >
+            <Image source={{ uri: category.image }} width={50} height={50}/>
             <Text
               style={[
                 styles.tabText,
@@ -65,6 +67,7 @@ const styles = StyleSheet.create({
     marginRight: 8,
     borderBottomWidth: 2,
     borderBottomColor: "transparent",
+    alignItems: "center",
   },
   selectedTab: {
     borderBottomColor: Colors.primary.main,

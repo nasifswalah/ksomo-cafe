@@ -3,7 +3,7 @@ import { useCart } from "@/hooks/useCart";
 import { MenuItem as MenuItemType } from "@/types/menu";
 import Feather from '@expo/vector-icons/Feather';
 import React from "react";
-import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 interface MenuItemProps {
   item: MenuItemType;
@@ -32,13 +32,13 @@ const MenuItem: React.FC<MenuItemProps> = ({ item }) => {
         )}
       </View>
       <View style={styles.rightContent}>
-        {item.image && (
+        {/* {item.image && (
           <Image 
             source={{ uri: item.image }} 
             style={styles.image} 
             resizeMode="cover"
           />
-        )}
+        )} */}
         <TouchableOpacity 
           style={styles.addButton}
           onPress={handleAddToCart}

@@ -95,10 +95,10 @@ export const menuItems: MenuItem[] = [
 ];
 
 export const categories = [
-  { id: "burgers", name: "Burgers" },
-  { id: "pasta", name: "Pasta" },
-  { id: "sides", name: "Sides" },
-  { id: "cold", name: "Cold" },
-  { id: "hot", name: "Hot" },
-  { id: "sandwich", name: "Sandwich" },
+  { id: "burgers", name: "Burgers", image: "https://img.freepik.com/premium-vector/burger-icon-logo-vector_880237-264.jpg" },
+  { id: "pasta", name: "Pasta", image: "https://img.freepik.com/premium-vector/burger-icon-logo-vector_880237-264.jpg" },
+  { id: "sides", name: "Sides", image: "https://img.freepik.com/premium-vector/burger-icon-logo-vector_880237-264.jpg" },
+  { id: "cold", name: "Cold", image: "https://img.freepik.com/premium-vector/burger-icon-logo-vector_880237-264.jpg" },
+  { id: "hot", name: "Hot", image: "https://img.freepik.com/premium-vector/burger-icon-logo-vector_880237-264.jpg" },
+  { id: "sandwich", name: "Sandwich", image: "https://img.freepik.com/premium-vector/burger-icon-logo-vector_880237-264.jpg" },
 ];

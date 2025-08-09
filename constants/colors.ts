@@ -20,7 +20,11 @@ export const Colors = {
     paper: "#FFFFFF",
     dark: "#1B5E20",
   },
-  error: "#D32F2F",
+  error: {
+    main: "#D32F2F",
+    light: "#f62825ff",
+    dark: "#C62828",
+  },
   success: "#388E3C",
   divider: "#EEEEEE",
   gray: "#9e9e9ea9",

@@ -156,7 +156,7 @@ const styles = StyleSheet.create({
     fontWeight: "600",
   },
   errorText: {
-    color: Colors.error,
+    color: Colors.error.light,
     fontSize: 14,
     marginTop: 8,
     textAlign: "center",

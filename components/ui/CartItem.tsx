@@ -4,7 +4,7 @@ import { CartItem as CartItemType } from "@/types/menu";
 import { Octicons } from "@expo/vector-icons";
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import React from "react";
-import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 interface CartItemProps {
   item: CartItemType;
@@ -31,7 +31,7 @@ const CartItem: React.FC<CartItemProps> = ({ item }) => {
 
   return (
     <View style={styles.container} testID={`cart-item-${item.item.id}`}>
-      <View style={styles.imageContainer}>
+      {/* <View style={styles.imageContainer}>
         {item.item.image ? (
           <Image 
             source={{ uri: item.item.image }} 
@@ -41,7 +41,7 @@ const CartItem: React.FC<CartItemProps> = ({ item }) => {
         ) : (
           <View style={styles.imagePlaceholder} />
         )}
-      </View>
+      </View> */}
       
       <View style={styles.content}>
         <Text style={styles.name}>{item.item.name}</Text>
@@ -53,7 +53,7 @@ const CartItem: React.FC<CartItemProps> = ({ item }) => {
             onPress={handleDecrement}
             testID={`decrement-${item.item.id}`}
           >
-            <FontAwesome6 name="minus" size={24} color={Colors.text.primary} />
+            <FontAwesome6 name="minus" size={15} color={Colors.text.primary} />
           </TouchableOpacity>
           
           <Text style={styles.quantity}>{item.quantity}</Text>
@@ -63,7 +63,7 @@ const CartItem: React.FC<CartItemProps> = ({ item }) => {
             onPress={handleIncrement}
             testID={`increment-${item.item.id}`}
           >
-            <FontAwesome6 name="plus" size={24} color={Colors.text.primary} />
+            <FontAwesome6 name="plus" size={15} color={Colors.text.primary} />
           </TouchableOpacity>
         </View>
       </View>
@@ -78,7 +78,7 @@ const CartItem: React.FC<CartItemProps> = ({ item }) => {
           onPress={handleRemove}
           testID={`remove-${item.item.id}`}
         >
-          <Octicons name="trash" size={24} color="black" />
+          <Octicons name="trash" size={24} color={Colors.text.secondary} />
         </TouchableOpacity>
       </View>
     </View>

@@ -7,7 +7,16 @@ import { useAuth } from "@/hooks/useAuth";
 import { FontAwesome } from "@expo/vector-icons";
 import { Link } from "expo-router";
 import React, { useState } from "react";
-import { Image, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+  Image,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 
 export default function RegisterScreen() {
   const [email, setEmail] = useState("");
@@ -16,12 +25,12 @@ export default function RegisterScreen() {
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [confirmPasswordError, setConfirmPasswordError] = useState("");
-  
+
   const { register, loading, error } = useAuth();
 
   const validateForm = () => {
     let isValid = true;
-    
+
     // Email validation
     if (!email) {
       setEmailError("Email is required");
@@ -32,7 +41,7 @@ export default function RegisterScreen() {
     } else {
       setEmailError("");
     }
-    
+
     // Password validation
     if (!password) {
       setPasswordError("Password is required");
@@ -43,7 +52,7 @@ export default function RegisterScreen() {
     } else {
       setPasswordError("");
     }
-    
+
     // Confirm password validation
     if (!confirmPassword) {
       setConfirmPasswordError("Please confirm your password");
@@ -54,7 +63,7 @@ export default function RegisterScreen() {
     } else {
       setConfirmPasswordError("");
     }
-    
+
     return isValid;
   };
 
@@ -75,16 +84,14 @@ export default function RegisterScreen() {
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 20}
     >
-      <ScrollView 
+      <ScrollView
         contentContainerStyle={styles.scrollContent}
         keyboardShouldPersistTaps="handled"
       >
         <View style={styles.logoContainer}>
-          <Logo size="large" />
+          <Logo size="large" showText={false} />
         </View>
-        
-        <Text style={styles.headerText}>Let&apos;s create a account for you</Text>
-        
+
         <View style={styles.formContainer}>
           <Input
             placeholder="Email"
@@ -94,8 +101,9 @@ export default function RegisterScreen() {
             autoCapitalize="none"
             error={emailError}
             testID="email-input"
+            inputStyle={styles.input}
           />
-          
+
           <Input
             placeholder="Password"
             value={password}
@@ -103,8 +111,9 @@ export default function RegisterScreen() {
             isPassword
             error={passwordError}
             testID="password-input"
+            inputStyle={styles.input}
           />
-          
+
           <Input
             placeholder="Confirm password"
             value={confirmPassword}
@@ -112,34 +121,33 @@ export default function RegisterScreen() {
             isPassword
             error={confirmPasswordError}
             testID="confirm-password-input"
+            inputStyle={styles.input}
           />
-          
+
           {error && <Text style={styles.errorText}>{error}</Text>}
-          
+
           <Button
             title="Sign Up"
             onPress={handleRegister}
             loading={loading}
             style={styles.registerButton}
             testID="register-button"
+            variant="primary"
           />
         </View>
-        
+
         <View style={styles.socialContainer}>
-          <Text style={styles.orText}>OR</Text>
-          
+          <Text style={styles.orText}>Or continue with</Text>
+
           <View style={styles.socialButtons}>
             <TouchableOpacity
               style={styles.socialButton}
               onPress={() => handleSocialLogin("google")}
               testID="google-register-button"
             >
-              <Image
-                source={GoogleIcon}
-                style={styles.socialIcon}
-              />
+              <Image source={GoogleIcon} style={styles.socialIcon} />
             </TouchableOpacity>
-            
+
             <TouchableOpacity
               style={styles.socialButton}
               onPress={() => handleSocialLogin("apple")}
@@ -149,7 +157,7 @@ export default function RegisterScreen() {
             </TouchableOpacity>
           </View>
         </View>
-        
+
         <View style={styles.loginContainer}>
           <Text style={styles.loginText}>already have an account? </Text>
           <Link href="/login" asChild>
@@ -175,7 +183,6 @@ const styles = StyleSheet.create({
   },
   logoContainer: {
     alignItems: "center",
-    marginBottom: 24,
   },
   headerText: {
     fontSize: 18,
@@ -188,6 +195,12 @@ const styles = StyleSheet.create({
   },
   registerButton: {
     marginTop: 16,
+    width: "30%",
+    alignSelf: "center",
+    borderRadius: 100,
+  },
+  input: {
+    color: Colors.text.light,
   },
   socialContainer: {
     marginBottom: 24,
@@ -229,7 +242,7 @@ const styles = StyleSheet.create({
     fontWeight: "600",
   },
   errorText: {
-    color: Colors.error,
+    color: Colors.error.light,
     fontSize: 14,
     marginTop: 8,
     textAlign: "center",

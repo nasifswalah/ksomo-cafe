@@ -18,7 +18,7 @@ interface InputProps extends TextInputProps {
   error?: string;
   containerStyle?: ViewStyle;
   labelStyle?: TextStyle;
-  inputStyle?: ViewStyle;
+  inputStyle?: TextStyle;
   isPassword?: boolean;
 }
 
@@ -102,12 +102,13 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   inputError: {
-    borderColor: Colors.error,
+    borderColor: Colors.error.light,
   },
   errorText: {
-    color: Colors.error,
+    color: Colors.error.light,
     fontSize: 12,
     marginTop: 4,
+    alignSelf: "center",
   },
   eyeIcon: {
     position: "absolute",

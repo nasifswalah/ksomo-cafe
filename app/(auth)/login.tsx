@@ -88,6 +88,7 @@ export default function LoginScreen() {
             autoCapitalize="none"
             error={emailError}
             testID="email-input"
+            inputStyle={styles.input}
           />
 
           <Input
@@ -97,16 +98,14 @@ export default function LoginScreen() {
             isPassword
             error={passwordError}
             testID="password-input"
+            inputStyle={styles.input}
           />
 
-          <View style={styles.registerContainer}>
-            <Text style={styles.registerText}>Not a member? </Text>
-            <Link href="/register" asChild>
-              <TouchableOpacity>
-                <Text style={styles.registerLink}>Register now</Text>
-              </TouchableOpacity>
-            </Link>
-          </View>
+          <Link href="/forgot-password" asChild>
+            <TouchableOpacity style={styles.forgotPasswordContainer}>
+              <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
+            </TouchableOpacity>
+          </Link>
 
           {error && <Text style={styles.errorText}>{error}</Text>}
 
@@ -117,10 +116,11 @@ export default function LoginScreen() {
             style={styles.loginButton}
             testID="login-button"
             size="medium"
-            variant="secondary"
+            variant="primary"
           />
 
           <View style={styles.socialContainer}>
+            <Text style={styles.orText}>Or sign in with</Text>
             <View style={styles.socialButtons}>
               <TouchableOpacity
                 style={styles.socialButton}
@@ -144,11 +144,14 @@ export default function LoginScreen() {
             </View>
           </View>
 
-          <Link href="/forget-password" asChild>
-            <TouchableOpacity style={styles.forgotPasswordContainer}>
-              <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
-            </TouchableOpacity>
-          </Link>
+          <View style={styles.registerContainer}>
+            <Text style={styles.registerText}>Not a member? </Text>
+            <Link href="/register" asChild>
+              <TouchableOpacity>
+                <Text style={styles.registerLink}>Register now</Text>
+              </TouchableOpacity>
+            </Link>
+          </View>
         </View>
       </ScrollView>
     </KeyboardAvoidingView>
@@ -167,7 +170,6 @@ const styles = StyleSheet.create({
   },
   logoContainer: {
     alignItems: "center",
-    // marginBottom: 40,
   },
   formContainer: {
     marginBottom: 24,
@@ -179,8 +181,7 @@ const styles = StyleSheet.create({
     alignSelf: "center",
   },
   forgotPasswordContainer: {
-    alignItems: "center",
-    marginTop: 20,
+    marginLeft: 10,
   },
   forgotPasswordText: {
     color: Colors.text.light,
@@ -188,7 +189,7 @@ const styles = StyleSheet.create({
   },
   socialContainer: {
     marginBottom: 10,
-    marginTop: 16,
+    marginTop: 20,
   },
   orText: {
     color: Colors.text.light,
@@ -199,7 +200,6 @@ const styles = StyleSheet.create({
   socialButtons: {
     flexDirection: "row",
     justifyContent: "center",
-    marginTop: 16,
   },
   socialButton: {
     width: 50,
@@ -217,6 +217,7 @@ const styles = StyleSheet.create({
   registerContainer: {
     flexDirection: "row",
     justifyContent: "center",
+    marginTop: 16,
   },
   registerText: {
     color: Colors.text.light,
@@ -227,8 +228,12 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: "600",
   },
+  input: {
+    color: Colors.text.light,
+    paddingHorizontal: 20,
+  },
   errorText: {
-    color: Colors.error,
+    color: Colors.error.light,
     fontSize: 14,
     marginTop: 8,
     textAlign: "center",
