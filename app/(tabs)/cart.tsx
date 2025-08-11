@@ -20,7 +20,7 @@ export default function CartScreen() {
       <Text style={styles.emptyText}>Cart is empty...</Text>
       <Button
         title="Browse Menu"
-        onPress={() => router.navigate("/(tabs)/index")}
+        onPress={() => router.navigate("/(tabs)")}
         style={styles.browseButton}
         variant="outline"
         testID="browse-menu-button"

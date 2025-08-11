@@ -1,3 +1,4 @@
+import CartSummary from "@/components/ui/CartSummary";
 import CategoryTabs from "@/components/ui/CategoryTabs";
 import MenuItem from "@/components/ui/MenuItem";
 import Colors from "@/constants/colors";
@@ -60,6 +61,7 @@ export default function MenuScreen() {
           testID="menu-list"
         />
       )}
+      <CartSummary/>
     </View>
   );
 }

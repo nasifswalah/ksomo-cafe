@@ -91,7 +91,7 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   blurBackground: {
-    borderRadius: 100,
+    // borderRadius: 100,
     overflow: "hidden", // required for blur to stay inside rounded shape
   },
   input: {

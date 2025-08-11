@@ -231,6 +231,7 @@ const styles = StyleSheet.create({
   input: {
     color: Colors.text.light,
     paddingHorizontal: 20,
+    borderRadius: 100,
   },
   errorText: {
     color: Colors.error.light,

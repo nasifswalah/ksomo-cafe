@@ -1,8 +1,8 @@
 import Colors from "@/constants/colors";
 import { Ionicons } from "@expo/vector-icons";
-import Feather from '@expo/vector-icons/Feather';
-import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
-import SimpleLineIcons from '@expo/vector-icons/SimpleLineIcons';
+import Feather from "@expo/vector-icons/Feather";
+import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
+import SimpleLineIcons from "@expo/vector-icons/SimpleLineIcons";
 import { Tabs } from "expo-router";
 
 export default function TabsLayout() {
@@ -37,7 +37,11 @@ export default function TabsLayout() {
         options={{
           title: "Cart",
           tabBarIcon: ({ color }) => (
-            <MaterialCommunityIcons name="cart-outline" size={24} color={color} />
+            <MaterialCommunityIcons
+              name="cart-outline"
+              size={24}
+              color={color}
+            />
           ),
         }}
       />

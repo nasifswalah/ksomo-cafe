@@ -201,6 +201,7 @@ const styles = StyleSheet.create({
   },
   input: {
     color: Colors.text.light,
+    borderRadius: 100,
   },
   socialContainer: {
     marginBottom: 24,
