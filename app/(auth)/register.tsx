@@ -102,6 +102,7 @@ export default function RegisterScreen() {
             error={emailError}
             testID="email-input"
             inputStyle={styles.input}
+            borderRadius={100}
           />
 
           <Input
@@ -112,6 +113,7 @@ export default function RegisterScreen() {
             error={passwordError}
             testID="password-input"
             inputStyle={styles.input}
+            borderRadius={100}
           />
 
           <Input
@@ -122,6 +124,7 @@ export default function RegisterScreen() {
             error={confirmPasswordError}
             testID="confirm-password-input"
             inputStyle={styles.input}
+            borderRadius={100}
           />
 
           {error && <Text style={styles.errorText}>{error}</Text>}
@@ -201,7 +204,6 @@ const styles = StyleSheet.create({
   },
   input: {
     color: Colors.text.light,
-    borderRadius: 100,
   },
   socialContainer: {
     marginBottom: 24,

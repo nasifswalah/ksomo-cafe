@@ -79,8 +79,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   selectedSlot: {
-    backgroundColor: Colors.secondary.light,
-    borderColor: Colors.secondary.main,
+    backgroundColor: Colors.primary.light,
+    borderColor: Colors.primary.main,
   },
   slotText: {
     fontSize: 14,

@@ -20,6 +20,7 @@ interface InputProps extends TextInputProps {
   labelStyle?: TextStyle;
   inputStyle?: TextStyle;
   isPassword?: boolean;
+  borderRadius?: number;
 }
 
 const Input: React.FC<InputProps> = ({
@@ -29,6 +30,7 @@ const Input: React.FC<InputProps> = ({
   labelStyle,
   inputStyle,
   isPassword = false,
+  borderRadius = 8,
   ...props
 }) => {
   const [secureTextEntry, setSecureTextEntry] = useState(isPassword);
@@ -41,7 +43,7 @@ const Input: React.FC<InputProps> = ({
     <View style={[styles.container, containerStyle]}>
       {label && <Text style={[styles.label, labelStyle]}>{label}</Text>}
       <View style={styles.inputContainer}>
-        <BlurView intensity={30} tint="light" style={styles.blurBackground}>
+        <BlurView intensity={30} tint="light" style={[styles.blurBackground, { borderRadius }]}>
           <TextInput
             style={[
               styles.input,
@@ -91,8 +93,7 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   blurBackground: {
-    // borderRadius: 100,
-    overflow: "hidden", // required for blur to stay inside rounded shape
+    overflow: "hidden",
   },
   input: {
     paddingHorizontal: 16,

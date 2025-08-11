@@ -6,12 +6,12 @@ import Colors from "@/constants/colors";
 import { useAuth } from "@/hooks/useAuth";
 import React, { useEffect, useState } from "react";
 import {
-    KeyboardAvoidingView,
-    Platform,
-    ScrollView,
-    StyleSheet,
-    Text,
-    View,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
 } from "react-native";
 
 export default function ProfileScreen() {
@@ -136,6 +136,7 @@ export default function ProfileScreen() {
             loading={loading}
             style={styles.saveButton}
             testID="save-button"
+            variant="secondary"
           />
         </View>
       </ScrollView>
@@ -156,7 +157,7 @@ const styles = StyleSheet.create({
   },
   input: {
     borderWidth: 1,
-    borderColor: Colors.secondary.main,
+    borderColor: Colors.primary.dark,
     borderRadius: 8,
   },
   saveButton: {

@@ -22,7 +22,7 @@ export default function CartScreen() {
         title="Browse Menu"
         onPress={() => router.navigate("/(tabs)")}
         style={styles.browseButton}
-        variant="outline"
+        variant="outline-green"
         testID="browse-menu-button"
       />
     </View>
@@ -47,6 +47,7 @@ export default function CartScreen() {
         onPress={handleCheckout}
         style={styles.checkoutButton}
         testID="checkout-button"
+        variant="secondary"
       />
     </View>
   );

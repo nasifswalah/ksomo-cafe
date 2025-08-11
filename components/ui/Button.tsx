@@ -1,18 +1,18 @@
 import Colors from "@/constants/colors";
 import React from "react";
 import {
-    ActivityIndicator,
-    StyleSheet,
-    Text,
-    TextStyle,
-    TouchableOpacity,
-    TouchableOpacityProps,
-    ViewStyle
+  ActivityIndicator,
+  StyleSheet,
+  Text,
+  TextStyle,
+  TouchableOpacity,
+  TouchableOpacityProps,
+  ViewStyle
 } from "react-native";
 
 interface ButtonProps extends TouchableOpacityProps {
   title: string;
-  variant?: "primary" | "secondary" | "outline" | "text";
+  variant?: "primary" | "secondary" | "outline" | "outline-green" | "text";
   size?: "small" | "medium" | "large";
   loading?: boolean;
   style?: ViewStyle;
@@ -36,6 +36,8 @@ const Button: React.FC<ButtonProps> = ({
         return styles.secondaryButton;
       case "outline":
         return styles.outlineButton;
+      case "outline-green":
+        return styles.outlineButtonGreen;
       case "text":
         return styles.textButton;
       default:
@@ -51,6 +53,8 @@ const Button: React.FC<ButtonProps> = ({
         return styles.secondaryText;
       case "outline":
         return styles.outlineText;
+      case "outline-green":
+        return styles.outlineTextGreen;
       case "text":
         return styles.textButtonText;
       default:
@@ -121,6 +125,11 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: Colors.secondary.main,
   },
+  outlineButtonGreen: {
+    backgroundColor: "transparent",
+    borderWidth: 1,
+    borderColor: Colors.primary.main,
+  },
   textButton: {
     backgroundColor: "transparent",
   },
@@ -134,6 +143,10 @@ const styles = StyleSheet.create({
   },
   outlineText: {
     color: Colors.secondary.main,
+    fontWeight: "600",
+  },
+  outlineTextGreen: {
+    color: Colors.primary.main,
     fontWeight: "600",
   },
   textButtonText: {

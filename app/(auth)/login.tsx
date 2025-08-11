@@ -89,6 +89,7 @@ export default function LoginScreen() {
             error={emailError}
             testID="email-input"
             inputStyle={styles.input}
+            borderRadius={100}
           />
 
           <Input
@@ -99,6 +100,7 @@ export default function LoginScreen() {
             error={passwordError}
             testID="password-input"
             inputStyle={styles.input}
+            borderRadius={100}
           />
 
           <Link href="/forgot-password" asChild>
@@ -231,7 +233,6 @@ const styles = StyleSheet.create({
   input: {
     color: Colors.text.light,
     paddingHorizontal: 20,
-    borderRadius: 100,
   },
   errorText: {
     color: Colors.error.light,

@@ -1,6 +1,6 @@
 import Colors from "@/constants/colors";
 import React from "react";
-import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 interface Category {
   id: string;
@@ -36,7 +36,7 @@ const CategoryTabs: React.FC<CategoryTabsProps> = ({
             onPress={() => onSelectCategory(category.id)}
             testID={`category-tab-${category.id}`}
           >
-            <Image source={{ uri: category.image }} width={50} height={50}/>
+            {/* <Image source={{ uri: category.image }} width={50} height={50}/> */}
             <Text
               style={[
                 styles.tabText,
@@ -71,6 +71,9 @@ const styles = StyleSheet.create({
   },
   selectedTab: {
     borderBottomColor: Colors.primary.main,
+    backgroundColor: Colors.background.main,
+    borderTopStartRadius: 8,
+    borderTopEndRadius: 8,
   },
   tabText: {
     fontSize: 14,
