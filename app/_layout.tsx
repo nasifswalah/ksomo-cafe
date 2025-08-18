@@ -1,39 +1,38 @@
 // import { AuthProvider, useAuth } from "@/hooks/useAuth";
-import { AuthProvider, useAuth } from "@/hooks/useAuth";
+import { AuthProvider } from "@/hooks/useAuth";
 import { CartProvider } from "@/hooks/useCart";
-import { MenuProvider } from "@/hooks/useMenu";
+// import { MenuProvider } from "@/hooks/useMenu";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { ConvexProvider, ConvexReactClient } from "convex/react";
+import { ClerkProvider, useAuth as useClerkAuth } from "@clerk/clerk-expo";
+import { tokenCache } from "@clerk/clerk-expo/token-cache";
 import { Stack, useRouter, useSegments } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import React, { useEffect } from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { useAuth } from "@/hooks/useAuth";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
-const convex = new ConvexReactClient(process.env.EXPO_PUBLIC_CONVEX_URL!, {
-  unsavedChangesWarning: false,
-});
-
-const queryClient = new QueryClient();
+// const queryClient = new QueryClient();
 
 function RootLayoutNav() {
+  const { isSignedIn } = useClerkAuth();
   const { user, loading } = useAuth();
   const segments = useSegments();
   const router = useRouter();
 
-  // useEffect(() => {
-  //   if (loading) return;
+  useEffect(() => {
+    if (loading) return;
 
-  //   const inAuthGroup = segments[0] === "(auth)";
+    const inAuthGroup = segments[0] === "(auth)";
 
-  //   if (!user && !inAuthGroup) {
-  //     router.replace("/(auth)/login");
-  //   } else if (user && inAuthGroup) {
-  //     router.replace("/(tabs)");
-  //   }
-  // }, [user, loading, segments, router]);
+    if (!isSignedIn && !inAuthGroup) {
+      router.replace("/(auth)/login");
+    } else if (isSignedIn && inAuthGroup) {
+      router.replace("/(tabs)/profile");
+    }
+  }, [user, loading, segments, router]);
 
   return (
     <Stack screenOptions={{ headerBackTitle: "Back" }}>
@@ -57,18 +56,18 @@ export default function RootLayout() {
   }, []);
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <GestureHandlerRootView style={{ flex: 1 }}>
-        <ConvexProvider client={convex}>
+    // <QueryClientProvider client={queryClient}>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <ClerkProvider tokenCache={tokenCache}>
           <AuthProvider>
-            <MenuProvider>
+            {/* <MenuProvider> */}
               <CartProvider>
                 <RootLayoutNav />
               </CartProvider>
-            </MenuProvider>
+            {/* </MenuProvider> */}
           </AuthProvider>
-        </ConvexProvider>
-      </GestureHandlerRootView>
-    </QueryClientProvider>
+      </ClerkProvider>
+    </GestureHandlerRootView>
+    // </QueryClientProvider>
   );
 }

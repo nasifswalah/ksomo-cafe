@@ -1,13 +1,29 @@
+import { ClerkError } from "@/types/common";
+import { useSignIn, useSignUp, useUser } from "@clerk/clerk-expo";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { createContext, ReactNode, useContext, useEffect, useState } from "react";
-import { User } from "../types/menu";
+import { useRouter } from "expo-router";
+import React, {
+  createContext,
+  ReactNode,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
+import { User } from "../types/user";
 
 interface AuthContextType {
   user: User | null;
   loading: boolean;
   error: string | null;
-  login: (email: string, password: string) => Promise<boolean>;
-  register: (email: string, password: string, confirmPassword: string) => Promise<boolean>;
+  pendingVerification: boolean;
+  // login: (email: string, password: string) => Promise<boolean>;
+  onSignUpPress: (
+    emailAddress: string,
+    password: string,
+    confirmPassword: string
+  ) => Promise<boolean>;
+  onVerifyPress: (code: string) => Promise<boolean>;
+  onSignInPress: (emailAddress: string, password: string) => Promise<boolean>;
   logout: () => Promise<void>;
   updateProfile: (userData: Partial<User>) => Promise<boolean>;
   resetPassword: (email: string) => Promise<boolean>;
@@ -16,9 +32,17 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
+  const { isLoaded: isSignUpLoaded, signUp, setActive: setActiveSignUp } = useSignUp();
+  const { isLoaded: isSignInLoaded, signIn, setActive: setActiveSignIn } = useSignIn();
+  const { user: clerkUser } = useUser()
+  const router = useRouter();
+
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [pendingVerification, setPendingVerification] = React.useState(false);
+
+
 
   useEffect(() => {
     const loadUser = async () => {
@@ -36,59 +60,99 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     loadUser();
   }, []);
 
-  const login = async (email: string, password: string) => {
+   // Handle the submission of the sign-in form
+   const onSignInPress = async (emailAddress: string, password: string) => {
+    if (!isSignInLoaded) return false;
+
     try {
       setLoading(true);
       setError(null);
 
-      if (email && password) {
-        await new Promise((resolve) => setTimeout(resolve, 1000));
+      const signInAttempt = await signIn.create({
+        identifier: emailAddress,
+        password,
+      })
 
-        const mockUser: User = {
-          id: "user-" + Date.now(),
-          email,
-        };
-
-        await AsyncStorage.setItem("user", JSON.stringify(mockUser));
-        setUser(mockUser);
+      if (signInAttempt.status === 'complete') {
+        await setActiveSignIn({ session: signInAttempt.createdSessionId })
+        router.replace('/(tabs)')
         return true;
       } else {
-        throw new Error("Email and password are required");
+        console.error(JSON.stringify(signInAttempt, null, 2))
+        return false;
       }
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : "Login failed";
-      setError(errorMessage);
+      const errorMessage = err as ClerkError;
+      alert(errorMessage.errors[0].message);
+      setError(errorMessage.errors[0].message);
       return false;
     } finally {
       setLoading(false);
     }
-  };
+  }
 
-  const register = async (email: string, password: string, confirmPassword: string) => {
+  const onSignUpPress = async (
+    emailAddress: string,
+    password: string,
+    confirmPassword: string
+  ) => {
+    if (!isSignUpLoaded) return false;
+
     try {
       setLoading(true);
       setError(null);
 
-      if (!email || !password) {
+      if (!emailAddress || !password) {
         throw new Error("Email and password are required");
       }
       if (password !== confirmPassword) {
         throw new Error("Passwords do not match");
       }
 
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      await signUp.create({
+        emailAddress,
+        password,
+      });
 
-      const mockUser: User = {
-        id: "user-" + Date.now(),
-        email,
-      };
+      await signUp.prepareEmailAddressVerification({ strategy: "email_code" });
 
-      await AsyncStorage.setItem("user", JSON.stringify(mockUser));
-      setUser(mockUser);
+      setPendingVerification(true);
       return true;
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : "Registration failed";
-      setError(errorMessage);
+      const errorMessage = err as ClerkError;
+      alert(errorMessage.errors[0].message);
+      setError(errorMessage.errors[0].message);
+      return false;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Handle submission of verification form
+  const onVerifyPress = async (code: string) => {
+    if (!isSignUpLoaded) return false;
+
+    try {
+      setLoading(true);
+      setError(null);
+
+      if (!code) {
+        throw new Error("Verification code is required");
+      }
+
+      const signUpAttempt = await signUp.attemptEmailAddressVerification({
+        code,
+      });
+
+      if (signUpAttempt.status === "complete") {
+        await setActiveSignUp({ session: signUpAttempt.createdSessionId });
+        return true;
+      } else {
+        console.error(JSON.stringify(signUpAttempt, null, 2));
+        return false;
+      }
+    } catch (err) {
+      console.error(JSON.stringify(err, null, 2));
       return false;
     } finally {
       setLoading(false);
@@ -141,8 +205,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         user,
         loading,
         error,
-        login,
-        register,
+        pendingVerification,
+        onSignUpPress,
+        onVerifyPress,
+        onSignInPress,
         logout,
         updateProfile,
         resetPassword,

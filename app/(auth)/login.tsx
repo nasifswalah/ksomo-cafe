@@ -24,7 +24,7 @@ export default function LoginScreen() {
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
 
-  const { login, loading, error } = useAuth();
+  const { onSignInPress, loading, error } = useAuth();
 
   const validateForm = () => {
     let isValid = true;
@@ -55,10 +55,12 @@ export default function LoginScreen() {
   };
 
   const handleLogin = async () => {
-    router.push("/(tabs)");
-    // if (validateForm()) {
-    //   await login(email, password);
-    // }
+    if (validateForm()) {
+      const success = await onSignInPress(email, password);
+      if(success) {
+        router.replace('/(tabs)');
+      }
+    }
   };
 
   const handleSocialLogin = (provider: string) => {
@@ -67,97 +69,99 @@ export default function LoginScreen() {
   };
 
   return (
-    <KeyboardAvoidingView
-      style={styles.container}
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-      keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 20}
-    >
-      <ScrollView
-        contentContainerStyle={styles.scrollContent}
-        keyboardShouldPersistTaps="handled"
+    <View style={{ flex: 1, backgroundColor: Colors.primary.dark }}>
+      <KeyboardAvoidingView
+        style={styles.container}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        keyboardVerticalOffset={Platform.OS === "ios" ? 20 : 0}
       >
-        <View style={styles.logoContainer}>
-          <Logo size="large" showText={false} />
-        </View>
-
-        <View style={styles.formContainer}>
-          <Input
-            placeholder="Enter your email"
-            value={email}
-            onChangeText={setEmail}
-            keyboardType="email-address"
-            autoCapitalize="none"
-            error={emailError}
-            testID="email-input"
-            inputStyle={styles.input}
-            borderRadius={100}
-          />
-
-          <Input
-            placeholder="Enter your password"
-            value={password}
-            onChangeText={setPassword}
-            isPassword
-            error={passwordError}
-            testID="password-input"
-            inputStyle={styles.input}
-            borderRadius={100}
-          />
-
-          <Link href="/forgot-password" asChild>
-            <TouchableOpacity style={styles.forgotPasswordContainer}>
-              <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
-            </TouchableOpacity>
-          </Link>
-
-          {error && <Text style={styles.errorText}>{error}</Text>}
-
-          <Button
-            title="Sign In"
-            onPress={handleLogin}
-            loading={loading}
-            style={styles.loginButton}
-            testID="login-button"
-            size="medium"
-            variant="primary"
-          />
-
-          <View style={styles.socialContainer}>
-            <Text style={styles.orText}>Or sign in with</Text>
-            <View style={styles.socialButtons}>
-              <TouchableOpacity
-                style={styles.socialButton}
-                onPress={() => handleSocialLogin("google")}
-                testID="google-login-button"
-              >
-                <Image source={GoogleIcon} style={styles.socialIcon} />
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                style={styles.socialButton}
-                onPress={() => handleSocialLogin("apple")}
-                testID="apple-login-button"
-              >
-                <FontAwesome
-                  name="apple"
-                  size={24}
-                  color={Colors.text.primary}
-                />
-              </TouchableOpacity>
-            </View>
+        <ScrollView
+          contentContainerStyle={styles.scrollContent}
+          keyboardShouldPersistTaps="handled"
+        >
+          <View style={styles.logoContainer}>
+            <Logo size="large" showText={false} />
           </View>
 
-          <View style={styles.registerContainer}>
-            <Text style={styles.registerText}>Not a member? </Text>
-            <Link href="/register" asChild>
-              <TouchableOpacity>
-                <Text style={styles.registerLink}>Register now</Text>
+          <View style={styles.formContainer}>
+            <Input
+              placeholder="Enter your email"
+              value={email}
+              onChangeText={setEmail}
+              keyboardType="email-address"
+              autoCapitalize="none"
+              error={emailError}
+              testID="email-input"
+              inputStyle={styles.input}
+              borderRadius={100}
+            />
+
+            <Input
+              placeholder="Enter your password"
+              value={password}
+              onChangeText={setPassword}
+              isPassword
+              error={passwordError}
+              testID="password-input"
+              inputStyle={styles.input}
+              borderRadius={100}
+            />
+
+            <Link href="/forgot-password" asChild>
+              <TouchableOpacity style={styles.forgotPasswordContainer}>
+                <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
               </TouchableOpacity>
             </Link>
+
+            {error && <Text style={styles.errorText}>{error}</Text>}
+
+            <Button
+              title="Sign In"
+              onPress={handleLogin}
+              loading={loading}
+              style={styles.loginButton}
+              testID="login-button"
+              size="medium"
+              variant="primary"
+            />
+
+            <View style={styles.socialContainer}>
+              <Text style={styles.orText}>Or sign in with</Text>
+              <View style={styles.socialButtons}>
+                <TouchableOpacity
+                  style={styles.socialButton}
+                  onPress={() => handleSocialLogin("google")}
+                  testID="google-login-button"
+                >
+                  <Image source={GoogleIcon} style={styles.socialIcon} />
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  style={styles.socialButton}
+                  onPress={() => handleSocialLogin("apple")}
+                  testID="apple-login-button"
+                >
+                  <FontAwesome
+                    name="apple"
+                    size={24}
+                    color={Colors.text.primary}
+                  />
+                </TouchableOpacity>
+              </View>
+            </View>
+
+            <View style={styles.registerContainer}>
+              <Text style={styles.registerText}>Not a member? </Text>
+              <Link href="/register" asChild>
+                <TouchableOpacity>
+                  <Text style={styles.registerLink}>Register now</Text>
+                </TouchableOpacity>
+              </Link>
+            </View>
           </View>
-        </View>
-      </ScrollView>
-    </KeyboardAvoidingView>
+        </ScrollView>
+      </KeyboardAvoidingView>
+    </View>
   );
 }
 

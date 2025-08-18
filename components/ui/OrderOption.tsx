@@ -83,13 +83,13 @@ const styles = StyleSheet.create({
     marginRight: 8,
   },
   radioSelected: {
-    borderColor: Colors.primary.main,
+    borderColor: Colors.secondary.main,
   },
   radioInner: {
     width: 10,
     height: 10,
     borderRadius: 5,
-    backgroundColor: Colors.primary.main,
+    backgroundColor: Colors.secondary.main,
   },
   optionText: {
     fontSize: 16,

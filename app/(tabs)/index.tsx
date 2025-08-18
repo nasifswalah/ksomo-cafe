@@ -3,8 +3,7 @@ import CategoryTabs from "@/components/ui/CategoryTabs";
 import MenuItem from "@/components/ui/MenuItem";
 import OutletStatus from "@/components/ui/OutletStatus";
 import Colors from "@/constants/colors";
-import { useMenu } from "@/hooks/useMenu";
-import { categories } from "@/mocks/menu";
+import { categories, menuItems } from "@/mocks/menu";
 import React, { useEffect, useState } from "react";
 import {
   ActivityIndicator,
@@ -14,21 +13,19 @@ import {
 } from "react-native";
 
 export default function MenuScreen() {
-  const { menu } = useMenu();
+  // const { menu } = useMenu();
   const [selectedCategory, setSelectedCategory] = useState("cold");
   const [filteredItems, setFilteredItems] = useState(
-    menu.filter((item) => item.category === "cold")
+    menuItems.filter((item) => item.category === "cold")
   );
   const [loading, setLoading] = useState(false);
-
-  console.log(menu);
 
   useEffect(() => {
     setLoading(true);
     // Simulate loading delay
     const timer = setTimeout(() => {
       setFilteredItems(
-        menu.filter((item) => item.category === selectedCategory)
+        menuItems.filter((item) => item.category === selectedCategory)
       );
       setLoading(false);
     }, 300);

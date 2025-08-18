@@ -4,9 +4,10 @@ import Logo from "@/components/ui/Logo";
 import Colors from "@/constants/colors";
 import { GoogleIcon } from "@/constants/icons";
 import { useAuth } from "@/hooks/useAuth";
+import { useSignUp } from "@clerk/clerk-expo";
 import { FontAwesome } from "@expo/vector-icons";
-import { Link } from "expo-router";
-import React, { useState } from "react";
+import { Link, useRouter } from "expo-router";
+import React from "react";
 import {
   Image,
   KeyboardAvoidingView,
@@ -19,38 +20,40 @@ import {
 } from "react-native";
 
 export default function RegisterScreen() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [emailError, setEmailError] = useState("");
-  const [passwordError, setPasswordError] = useState("");
-  const [confirmPasswordError, setConfirmPasswordError] = useState("");
+  const router = useRouter();
 
-  const { register, loading, error } = useAuth();
+  const [password, setPassword] = React.useState("");
+  const [confirmPassword, setConfirmPassword] = React.useState("");
+  const [confirmPasswordError, setConfirmPasswordError] = React.useState("");
+  const [emailAddress, setEmailAddress] = React.useState("");
+  const [code, setCode] = React.useState("");
+  const [error, setError] = React.useState("");
+
+  const { onSignUpPress, onVerifyPress, error: authError, pendingVerification, loading } = useAuth();
 
   const validateForm = () => {
     let isValid = true;
 
     // Email validation
-    if (!email) {
-      setEmailError("Email is required");
+    if (!emailAddress) {
+      setError("Email is required");
       isValid = false;
-    } else if (!/\S+@\S+\.\S+/.test(email)) {
-      setEmailError("Email is invalid");
+    } else if (!/\S+@\S+\.\S+/.test(emailAddress)) {
+      setError("Email is invalid");
       isValid = false;
     } else {
-      setEmailError("");
+      setError("");
     }
 
     // Password validation
     if (!password) {
-      setPasswordError("Password is required");
+      setError("Password is required");
       isValid = false;
     } else if (password.length < 6) {
-      setPasswordError("Password must be at least 6 characters");
+      setError("Password must be at least 6 characters");
       isValid = false;
     } else {
-      setPasswordError("");
+      setError("");
     }
 
     // Confirm password validation
@@ -69,7 +72,10 @@ export default function RegisterScreen() {
 
   const handleRegister = async () => {
     if (validateForm()) {
-      await register(email, password, confirmPassword);
+      const success = await onSignUpPress(emailAddress, password, confirmPassword);
+      if(success) {
+        router.replace('/(tabs)/profile');
+      }
     }
   };
 
@@ -78,11 +84,19 @@ export default function RegisterScreen() {
     console.log(`Register with ${provider}`);
   };
 
+  // Handle submission of verification form
+  const handleVerify = async () => {
+    if(code) {
+      await onVerifyPress(code);
+    }
+  }
+
   return (
+     <View style={{ flex: 1, backgroundColor: Colors.primary.dark }}>
     <KeyboardAvoidingView
       style={styles.container}
       behavior={Platform.OS === "ios" ? "padding" : "height"}
-      keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 20}
+      keyboardVerticalOffset={Platform.OS === "ios" ? 20 : 0}
     >
       <ScrollView
         contentContainerStyle={styles.scrollContent}
@@ -93,50 +107,75 @@ export default function RegisterScreen() {
         </View>
 
         <View style={styles.formContainer}>
-          <Input
-            placeholder="Email"
-            value={email}
-            onChangeText={setEmail}
-            keyboardType="email-address"
-            autoCapitalize="none"
-            error={emailError}
-            testID="email-input"
-            inputStyle={styles.input}
-            borderRadius={100}
-          />
+          {!pendingVerification && (
+            <>
+              <Input
+                placeholder="Email"
+                value={emailAddress}
+                onChangeText={setEmailAddress}
+                keyboardType="email-address"
+                autoCapitalize="none"
+                error={error}
+                testID="email-input"
+                inputStyle={styles.input}
+                borderRadius={100}
+              />
+              <Input
+                placeholder="Password"
+                value={password}
+                onChangeText={setPassword}
+                isPassword
+                error={error}
+                testID="password-input"
+                inputStyle={styles.input}
+                borderRadius={100}
+              />
+              <Input
+                placeholder="Confirm password"
+                value={confirmPassword}
+                onChangeText={setConfirmPassword}
+                isPassword
+                error={confirmPasswordError}
+                testID="confirm-password-input"
+                inputStyle={styles.input}
+                borderRadius={100}
+              />
+            </>
+          )}
 
-          <Input
-            placeholder="Password"
-            value={password}
-            onChangeText={setPassword}
-            isPassword
-            error={passwordError}
-            testID="password-input"
-            inputStyle={styles.input}
-            borderRadius={100}
-          />
+          {pendingVerification && (
+            <Input
+              placeholder="Verification code"
+              value={code}
+              onChangeText={setCode}
+              error={error}
+              testID="verification-code-input"
+              inputStyle={styles.input}
+              borderRadius={100}
+            />
+          )}
 
-          <Input
-            placeholder="Confirm password"
-            value={confirmPassword}
-            onChangeText={setConfirmPassword}
-            isPassword
-            error={confirmPasswordError}
-            testID="confirm-password-input"
-            inputStyle={styles.input}
-            borderRadius={100}
-          />
+          {authError && <Text style={styles.errorText}>{authError}</Text>}
 
-          {error && <Text style={styles.errorText}>{error}</Text>}
-
-          <Button
-            title="Sign Up"
-            onPress={handleRegister}
-            loading={loading}
-            style={styles.registerButton}
-            testID="register-button"
-            variant="primary"
-          />
+          {!pendingVerification ? (
+            <Button
+              title="Continue"
+              onPress={handleRegister}
+              loading={loading}
+              style={styles.registerButton}
+              testID="register-button"
+              variant="primary"
+            />
+          ) : (
+            <Button
+              title="Verify"
+              onPress={handleVerify}
+              loading={loading}
+              style={styles.registerButton}
+              testID="verify-button"
+              variant="primary"
+            />
+          )}
         </View>
 
         <View style={styles.socialContainer}>
@@ -171,6 +210,7 @@ export default function RegisterScreen() {
         </View>
       </ScrollView>
     </KeyboardAvoidingView>
+    </View>
   );
 }
 
@@ -180,9 +220,9 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.primary.dark,
   },
   scrollContent: {
-    flexGrow: 1,
     padding: 24,
-    justifyContent: "center",
+    flexGrow: 1,
+    justifyContent: "flex-start",
   },
   logoContainer: {
     alignItems: "center",
@@ -198,7 +238,7 @@ const styles = StyleSheet.create({
   },
   registerButton: {
     marginTop: 16,
-    width: "30%",
+    width: "100%",
     alignSelf: "center",
     borderRadius: 100,
   },
