@@ -16,7 +16,8 @@
         "foregroundImage": "./assets/images/kosmos-icon2.png",
         "backgroundColor": "#ffffff"
       },
-      "edgeToEdgeEnabled": true
+      "edgeToEdgeEnabled": true,
+      "package": "com.interconnect12.KosmoCafe"
     },
     "web": {
       "bundler": "metro",

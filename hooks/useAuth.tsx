@@ -1,9 +1,21 @@
-import { User } from "@/types/menu";
-import createContextHook from "@nkzw/create-context-hook";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useEffect, useState } from "react";
+import { createContext, ReactNode, useContext, useEffect, useState } from "react";
+import { User } from "../types/menu";
 
-export const [AuthProvider, useAuth] = createContextHook(() => {
+interface AuthContextType {
+  user: User | null;
+  loading: boolean;
+  error: string | null;
+  login: (email: string, password: string) => Promise<boolean>;
+  register: (email: string, password: string, confirmPassword: string) => Promise<boolean>;
+  logout: () => Promise<void>;
+  updateProfile: (userData: Partial<User>) => Promise<boolean>;
+  resetPassword: (email: string) => Promise<boolean>;
+}
+
+const AuthContext = createContext<AuthContextType | undefined>(undefined);
+
+export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -21,7 +33,6 @@ export const [AuthProvider, useAuth] = createContextHook(() => {
         setLoading(false);
       }
     };
-
     loadUser();
   }, []);
 
@@ -29,17 +40,15 @@ export const [AuthProvider, useAuth] = createContextHook(() => {
     try {
       setLoading(true);
       setError(null);
-      
-      // Mock login - in a real app, this would be an API call
+
       if (email && password) {
-        // Simulate API delay
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+
         const mockUser: User = {
           id: "user-" + Date.now(),
           email,
         };
-        
+
         await AsyncStorage.setItem("user", JSON.stringify(mockUser));
         setUser(mockUser);
         return true;
@@ -59,23 +68,21 @@ export const [AuthProvider, useAuth] = createContextHook(() => {
     try {
       setLoading(true);
       setError(null);
-      
+
       if (!email || !password) {
         throw new Error("Email and password are required");
       }
-      
       if (password !== confirmPassword) {
         throw new Error("Passwords do not match");
       }
-      
-      // Simulate API delay
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
+
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
       const mockUser: User = {
         id: "user-" + Date.now(),
         email,
       };
-      
+
       await AsyncStorage.setItem("user", JSON.stringify(mockUser));
       setUser(mockUser);
       return true;
@@ -100,7 +107,6 @@ export const [AuthProvider, useAuth] = createContextHook(() => {
   const updateProfile = async (userData: Partial<User>) => {
     try {
       if (!user) return false;
-      
       const updatedUser = { ...user, ...userData };
       await AsyncStorage.setItem("user", JSON.stringify(updatedUser));
       setUser(updatedUser);
@@ -115,15 +121,10 @@ export const [AuthProvider, useAuth] = createContextHook(() => {
     try {
       setLoading(true);
       setError(null);
-      
-      if (!email) {
-        throw new Error("Email is required");
-      }
-      
-      // Simulate API delay
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // In a real app, this would send a reset link to the user's email
+
+      if (!email) throw new Error("Email is required");
+
+      await new Promise((resolve) => setTimeout(resolve, 1000));
       return true;
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : "Password reset failed";
@@ -134,14 +135,28 @@ export const [AuthProvider, useAuth] = createContextHook(() => {
     }
   };
 
-  return {
-    user,
-    loading,
-    error,
-    login,
-    register,
-    logout,
-    updateProfile,
-    resetPassword,
-  };
-});
+  return (
+    <AuthContext.Provider
+      value={{
+        user,
+        loading,
+        error,
+        login,
+        register,
+        logout,
+        updateProfile,
+        resetPassword,
+      }}
+    >
+      {children}
+    </AuthContext.Provider>
+  );
+};
+
+export const useAuth = () => {
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error("useAuth must be used within an AuthProvider");
+  }
+  return context;
+};

@@ -1,9 +1,20 @@
 import { CartItem, MenuItem } from "@/types/menu";
-import createContextHook from "@nkzw/create-context-hook";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useEffect, useState } from "react";
+import React, { createContext, ReactNode, useContext, useEffect, useState } from "react";
 
-export const [CartProvider, useCart] = createContextHook(() => {
+interface CartContextType {
+  items: CartItem[];
+  loading: boolean;
+  addToCart: (item: MenuItem, quantity?: number) => void;
+  removeFromCart: (itemId: string) => void;
+  updateQuantity: (itemId: string, quantity: number) => void;
+  clearCart: () => void;
+  getTotal: () => number;
+}
+
+const CartContext = createContext<CartContextType | undefined>(undefined);
+
+export const CartProvider = ({ children }: { children: ReactNode }) => {
   const [items, setItems] = useState<CartItem[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
@@ -33,28 +44,28 @@ export const [CartProvider, useCart] = createContextHook(() => {
   };
 
   const addToCart = (item: MenuItem, quantity: number = 1) => {
-    setItems(prevItems => {
-      const existingItem = prevItems.find(i => i.item.id === item.id);
-      
+    setItems((prevItems) => {
+      const existingItem = prevItems.find((i) => i.item.id === item.id);
+
       let newItems;
       if (existingItem) {
-        newItems = prevItems.map(i => 
-          i.item.id === item.id 
-            ? { ...i, quantity: i.quantity + quantity } 
+        newItems = prevItems.map((i) =>
+          i.item.id === item.id
+            ? { ...i, quantity: i.quantity + quantity }
             : i
         );
       } else {
         newItems = [...prevItems, { item, quantity }];
       }
-      
+
       saveCart(newItems);
       return newItems;
     });
   };
 
   const removeFromCart = (itemId: string) => {
-    setItems(prevItems => {
-      const newItems = prevItems.filter(i => i.item.id !== itemId);
+    setItems((prevItems) => {
+      const newItems = prevItems.filter((i) => i.item.id !== itemId);
       saveCart(newItems);
       return newItems;
     });
@@ -65,9 +76,9 @@ export const [CartProvider, useCart] = createContextHook(() => {
       removeFromCart(itemId);
       return;
     }
-    
-    setItems(prevItems => {
-      const newItems = prevItems.map(i => 
+
+    setItems((prevItems) => {
+      const newItems = prevItems.map((i) =>
         i.item.id === itemId ? { ...i, quantity } : i
       );
       saveCart(newItems);
@@ -81,16 +92,33 @@ export const [CartProvider, useCart] = createContextHook(() => {
   };
 
   const getTotal = () => {
-    return items.reduce((total, item) => total + (item.item.price * item.quantity), 0);
+    return items.reduce(
+      (total, item) => total + item.item.price * item.quantity,
+      0
+    );
   };
 
-  return {
-    items,
-    loading,
-    addToCart,
-    removeFromCart,
-    updateQuantity,
-    clearCart,
-    getTotal,
-  };
-});
+  return (
+    <CartContext.Provider
+      value={{
+        items,
+        loading,
+        addToCart,
+        removeFromCart,
+        updateQuantity,
+        clearCart,
+        getTotal,
+      }}
+    >
+      {children}
+    </CartContext.Provider>
+  );
+};
+
+export const useCart = () => {
+  const context = useContext(CartContext);
+  if (!context) {
+    throw new Error("useCart must be used within a CartProvider");
+  }
+  return context;
+};

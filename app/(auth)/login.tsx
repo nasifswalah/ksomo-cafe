@@ -5,7 +5,7 @@ import Colors from "@/constants/colors";
 import { GoogleIcon } from "@/constants/icons";
 import { useAuth } from "@/hooks/useAuth";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
-import { Link } from "expo-router";
+import { Link, router } from "expo-router";
 import React, { useState } from "react";
 import {
   Image,
@@ -55,9 +55,10 @@ export default function LoginScreen() {
   };
 
   const handleLogin = async () => {
-    if (validateForm()) {
-      await login(email, password);
-    }
+    router.push("/(tabs)");
+    // if (validateForm()) {
+    //   await login(email, password);
+    // }
   };
 
   const handleSocialLogin = (provider: string) => {
